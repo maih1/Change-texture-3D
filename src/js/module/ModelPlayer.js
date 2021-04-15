@@ -387,7 +387,7 @@ function _addGuiMaterial (obj) {
     console.log('a')
     // folder = gui.addFolder(_name)
     _guiMaterial(obj);
-    // folder.opent()
+    folder1.open()
 
 }
 
