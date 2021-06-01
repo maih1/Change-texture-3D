@@ -34,6 +34,7 @@ let group, objt;
 let count = 1;
 
 let selectedObject = null;
+let defaulseColor = null;
 // gui
 
 var gui = new GUI();
@@ -48,8 +49,11 @@ var urlGlb = {
     glb5: "../data/gltf/uploads_files_2784986_sofa.gltf",
     glb6: "../data/gltf/chair.glb",
     glb7: "../data/glb/uploads_files_2886033_LasVegas.glb",
+    glb8: "../data/gltf/vans/vans.gltf",
+    glb9: "../data/gltf/vans/blue_sneaker.gltf",
+    glb10: "../data/gltf/MaterialsVariantsShoe.gltf",
 }
-
+//localhost:3000/data/gltf/vans.gltf
 // url panorama cubemap
 const urlCube = {
     cube1: '../../data/panorama/cube/cube1/',
@@ -84,9 +88,12 @@ var urlTexture = {
     texture3: '../data/texture/texture3',
     texture4: '../data/texture/1',
     texture5: '../data/texture/2',
-    texture6: '../data/texture/3',
+    texture6: '../data/texture/15',
     texture7: '../data/texture/4',
     texture8: '../data/texture/5',
+    texture9: "../data/texture/camo",
+    texture10: "../data/texture/ghost",
+    texture11: "../data/texture/checkerboard",
 
     format1: '.jpg',
     format2: '.png',
@@ -100,6 +107,10 @@ const filePathUrl = urlParams.get('url');
 const filePathName = urlParams.get('file');
 const filePathFormat = urlParams.get('format');
 
+var pathGltf = '../data/gltf/' + filePathUrl + '/' + filePathName + filePathFormat;
+
+console.log(path, filePathUrl, filePathName, filePathFormat)
+
 init()
 animate();
 
@@ -107,8 +118,7 @@ function init() {
     _initGp();
 
     window.addEventListener( "mousemove", _mouseMove, false );
-    // window.addEventListener( "mouseover", _mouseup, false );
-    // window.addEventListener( "mouseout", _mouseup, false );
+    
     window.addEventListener( "mouseup", _mouseup, false );
 
     window.addEventListener( 'resize', onWindowResize, false );
@@ -178,17 +188,15 @@ function _mouseMove ( event ) {
     group = [];
     group.push(object);
 
+    // console.log(defaulseColor)
+
     if ( selectedObject ) {
 
-        selectedObject.material.color.set( '#ffffff' );
+        selectedObject.material.color.set( defaulseColor );
         selectedObject = null;
 
     }
-    // raycaster = new THREE.Raycaster();
-
-
-    // calculate mouse position in normalized device coordinates
-    // (-1 to +1) for both component
+    
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
     
@@ -199,19 +207,16 @@ function _mouseMove ( event ) {
 
     if ( intersects.length > 0 ) {
 
-        // console.log('s')
-        // console.log(selectedObject)
         const res = intersects.filter( function ( res ) {
 
             return res && res.object;
 
         } )[ 0 ];
 
-        // console.log(res)
-        // console.log(res.object)
-        // console.log('a')
-
         if ( res && res.object ) {
+
+            defaulseColor = '#' + res.object.material.color.getHexString()
+            // console.log(defaulseColor)
 
             selectedObject = res.object;
             selectedObject.material.color.set( '#cfedd5' );
@@ -228,21 +233,15 @@ function _mouseup( event ) {
 
     if ( selectedObject ) {
 
-        // selectedObject.material.color.set( '#ffffff' );
         selectedObject = null;
 
     }
-
-    // raycaster = new THREE.raycaster();
 
     // calculate mouse position in normalized device coordinates
     // (-1 to +1) for both component
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
     
-    // update the picking ray with the camera and mouse position
-    // raycaster.setFromCamera(mouse, camera);
-
     // calculate objects intersecting the picking ray
     const intersects = raycaster.intersectObjects( group, true );
 
@@ -254,14 +253,9 @@ function _mouseup( event ) {
 
         } )[ 0 ];
 
-        console.log(res)
-        console.log(res.object)
-        console.log('a')
-
         if ( res && res.object ) {
 
             selectedObject = res.object;
-            // selectedObject.material.color.set( '#f00' );
             _addGuiMaterial(selectedObject)
         }
     }
@@ -270,7 +264,6 @@ function _mouseup( event ) {
 function _plane() {
     
     // Creating the plan and grid
-
     const planeGeo = new THREE.PlaneBufferGeometry(3, 3);
     const planeMat = new THREE.MeshPhongMaterial( { color: 0x999999, depthWrite: false } );
     plane = new THREE.Mesh(planeGeo, planeMat);
@@ -307,7 +300,6 @@ function centralize (object) {
 function progressBarDivs() {
     
     // Creating the div 'Loading'
-
     progressBarDiv = document.createElement( 'div' );
     progressBarDiv.innerText = "Loading...";
     progressBarDiv.style.fontSize = "3em";
@@ -325,26 +317,20 @@ function _loadGLTF() {
     showProgressBar();
 
     // load file gltf
-
     var loader = new GLTFLoader();
 
     // path file gltf
-
-    var pathGltf = '../../upload/gltf/' + filePathUrl + '/' + filePathName + filePathFormat;
+    // var pathGltf = '../../upload/gltf/' + filePathUrl + '/' + filePathName + filePathFormat;
     // ../../upload/gltf/glb/test1.1.glb
+    // urlGlb.glb8
 
-    loader.load(urlGlb.glb6, 
+    loader.load(pathGltf, 
         (gltf) => {
             object = gltf.scene;
             centralize(object);
 
             object.traverse((obj) => {
-                if(obj.isMesh) {
-                    objt = obj
-                    // console.log(objt)
-                    // console.log(obj)
-                    // _addGuiMaterial(obj);
-                    // _guiMaterial (obj)
+                if(obj.isMesh) {         
                     obj.castShadow = true;
                     obj.receiveShadow = true;
                 }
@@ -363,36 +349,32 @@ function _loadGLTF() {
         },
 
         // called while loading is progressing
-
         onProgress,
 
         // called when loading has errors
-        
         onError,
     );
 
 }
 
 function _addGuiMaterial (obj) {
-    // console.log(obj)
     
-    console.log(folder1)
+    // console.log(folder1)
     let _name = 'Material ' + obj.name
-    console.log( folder.name)
+    // console.log( folder.name)
     if ( folder1 ) {
         _removeGui()
         gui.removeFolder(folder1);
         folder1 = null;
     }
-    console.log('a')
-    // folder = gui.addFolder(_name)
+
     _guiMaterial(obj);
     folder1.open()
 
 }
 
 function _removeGui() {
-    console.log(texturePattern)
+    // console.log(texturePattern)
     if (texturePattern) {
         folder1.remove(texturePattern)
         texturePattern = null
@@ -407,80 +389,77 @@ function _removeGui() {
 function _guiMaterial(obj) {
     _removeGui()
     // console.log(obj)
-    // count = count + 1
-    
-    // add gui material
-
     params = {
         color : '#ffffff',
         texture: 'null',
     }
 
     folder1 = gui.addFolder('Material ' + obj.name);
-    // folder = gui.addFolder('Material ' + obj.name + count);
-
-    // console.log(obj.material)
-
+    
     textureColor = folder1.addColor(params, 'color').onChange( function(colorValue) {
         obj.material.color.set(colorValue);
     });
 
     texturePattern = folder1.add(params, 'texture', 
     ['texture1', 'texture2', 'texture3', 'texture4', 'texture5',
-     'texture6', 'texture7', 'texture8'])
+     'texture6', 'texture7', 'texture8', 'texture9', 'texture10', 'texture11'])
     .onChange((value) => {
         switch(value) {
             case 'texture1':
                 obj.material = new THREE.MeshStandardMaterial( {
                     map: loadTexture(urlTexture.texture1, urlTexture.format1),
-                    // bumpScale: 12
                 })
-                // obj.material.map = loadTexture(urlTexture.texture1, urlTexture.format1);
-                // console.log(obj.material.map)
-                console.log(obj.material)
                 break;
             case 'texture2':
                 obj.material = new THREE.MeshStandardMaterial({
                     map : loadTexture(urlTexture.texture2, urlTexture.format1),
                 })
-                // obj.material.map = loadTexture(urlTexture.texture2, urlTexture.format1);
                 break;
             case 'texture3':
                 obj.material = new THREE.MeshStandardMaterial({
                     map : loadTexture(urlTexture.texture3, urlTexture.format1),
                 })
-                // obj.material.map = loadTexture(urlTexture.texture3, urlTexture.format1);
                 break;
             case 'texture4':
                 obj.material = new THREE.MeshStandardMaterial({
                     map : loadTexture(urlTexture.texture4, urlTexture.format1),
                 })
-                // obj.material.map = loadTexture(urlTexture.texture4, urlTexture.format1);
                 break;
             case 'texture5':
                 obj.material = new THREE.MeshStandardMaterial({
                     map : loadTexture(urlTexture.texture5, urlTexture.format1),
                 })
-                // obj.material.map = loadTexture(urlTexture.texture5, urlTexture.format1);
                 break;
             case 'texture6':
                 obj.material = new THREE.MeshStandardMaterial({
                     map : loadTexture(urlTexture.texture6, urlTexture.format1),
                 })
-                // obj.material.map = loadTexture(urlTexture.texture6, urlTexture.format1);
                 break;
             case 'texture7':
                 obj.material = new THREE.MeshStandardMaterial({
                     map : loadTexture(urlTexture.texture7, urlTexture.format1),
                 })
-                // obj.material.map = loadTexture(urlTexture.texture7, urlTexture.format1);
                 break;
             case 'texture8':
                 obj.material = new THREE.MeshStandardMaterial({
                     map : loadTexture(urlTexture.texture8, urlTexture.format1),
                 })
-                // obj.material.map = loadTexture(urlTexture.texture8, urlTexture.format1);
-                break;                
+                break; 
+            case 'texture9':
+                obj.material = new THREE.MeshStandardMaterial({
+                    map : loadTexture(urlTexture.texture9, urlTexture.format1),
+                })
+                break;        
+            case 'texture10':
+                obj.material = new THREE.MeshStandardMaterial({
+                    map : loadTexture(urlTexture.texture10, urlTexture.format1),
+                })
+                break;         
+            case 'texture11':
+            obj.material = new THREE.MeshStandardMaterial({
+                map : loadTexture(urlTexture.texture11, urlTexture.format1),
+            })
+            break; 
         }
     })
 }
@@ -488,7 +467,6 @@ function _guiMaterial(obj) {
 function _guiAnimation() {
     
     // add gui pause/continue animation
-
     params = {
         'pause/continue': pauseContinue,
     }
@@ -502,7 +480,6 @@ function _guiAnimation() {
 function _guiPlane() {
 
     // add gui plane
-
     params = {
         Plane: 'Disable plane',
         Grid: 'Disable grid',
@@ -551,7 +528,6 @@ function _guiPlane() {
 function _guiLight() {
 
     // add gui light
-
     params = {
         lightX: - 1,
         lightY: - 1,
@@ -603,7 +579,6 @@ function _guiLight() {
 function _guiShadow() {
     
     // gui shadow
-
     params = {  
         radius : 4,      
         shadowTop: 2,
@@ -651,8 +626,8 @@ function _guiShadow() {
 function _guiPanorama() {
 
     // add gui panorama
-    
     params = {
+        None: "null",
         Cube: 'null',
         Equirectangular: 'null',
         Envinronment: 'null',
@@ -660,15 +635,59 @@ function _guiPanorama() {
 
     folder = gui.addFolder('Panorama');
 
-    folder.add(params, 'Cube', ['Cube1', 'Cube2', 'Cube3']).onChange(_updatePanorama);
-    folder.add(params, 'Equirectangular', ['Equirectangular1', 'Equirectangular2', 'Equirectangular3']).onChange(_updatePanorama);
-    folder.add(params, 'Envinronment', ['Envinronment1', 'Envinronment2', 'Envinronment3', 'Envinronment4']).onChange(_updatePanorama);
+    folder.add(params, 'Cube', ['None', 'Cube1', 'Cube2', 'Cube3']).onChange(_updatePanorama);
+    folder.add(params, 'Equirectangular', ['None', 'Equirectangular1', 'Equirectangular2', 'Equirectangular3']).onChange(_updatePanorama);
+    folder.add(params, 'Envinronment', ['None', 'Envinronment1', 'Envinronment2', 'Envinronment3', 'Envinronment4']).onChange(_updatePanorama);
+}
+
+
+function _updatePanorama(value) {
+
+    // update panorama
+    switch(value) {
+        case 'None': 
+            panoramaNone()
+            console.log(scene.background)
+            break;
+        case 'Cube1':
+            panoramaCube(urlCube.cube1, urlCube.format);
+            console.log(scene.background)
+            break;
+        case 'Cube2':
+            panoramaCube(urlCube.cube2, urlCube.format);
+            break;
+        case 'Cube3':
+            panoramaCube(urlCube.cube3, urlCube.format);
+            break;
+
+        case 'Equirectangular1':
+            panoramaEquirectanggular(urlEquirectangular.equi1);
+            break;
+        case 'Equirectangular2':
+            panoramaEquirectanggular(urlEquirectangular.equi2);
+            break;
+        case 'Equirectangular3':
+            panoramaEquirectanggular(urlEquirectangular.equi3);
+            break;
+
+        case 'Envinronment1':
+            environment(urlHdr.hdr1);
+            break;
+        case 'Envinronment2':
+            environment(urlHdr.hdr2);
+            break;
+        case 'Envinronment3':
+            environment(urlHdr.hdr3);
+            break;
+        case 'Envinronment4':
+            environment(urlHdr.hdr4);
+            break;
+    }
 }
 
 function loadTexture(url, format) {
 
     // load texture
-
     var textureLoader = new THREE.TextureLoader();
     var text = textureLoader.load(url + format);
     text.encoding = THREE.sRGBEncoding;
@@ -677,10 +696,13 @@ function loadTexture(url, format) {
     return text;
 }
 
+function panoramaNone() {
+    scene.background = new THREE.Color('white');
+}
+
 function panoramaCube(url, format) {
 
     // panorama cubemap
-
     var urls = [
         url + 'posx' + format, url + 'negx' + format,
         url + 'posy' + format, url + 'negy' + format,
@@ -697,7 +719,6 @@ function panoramaCube(url, format) {
 function panoramaEquirectanggular(url) {
 
     // panorama equirectanggular
-
     const textureLoader = new THREE.TextureLoader();
 
     var textureEquirec = textureLoader.load( url );
@@ -709,7 +730,6 @@ function panoramaEquirectanggular(url) {
 function environment(url) {
 
     // environment EquirectangularShader
-
     var pmremGenerator = new THREE.PMREMGenerator(renderer);
     pmremGenerator.compileEquirectangularShader();
 
@@ -731,7 +751,6 @@ function environment(url) {
 function updatePlane(value) {
 
     // update plane
-
     switch(value) {
         case 'Enable plane':
             enablePlane();
@@ -768,7 +787,6 @@ function disableGrid() {
 function pauseContinue() {
 
     // pause and continue animation
-
     if (check1) {
         check1 = false;
         unPauseAllActions();
@@ -801,53 +819,13 @@ function activateAllActions() {
     }
 }
 
-function _updatePanorama(value) {
-
-    // update panorama
-
-    switch(value) {
-        case 'Cube1':
-            panoramaCube(urlCube.cube1, urlCube.format);
-            break;
-        case 'Cube2':
-            panoramaCube(urlCube.cube2, urlCube.format);
-            break;
-        case 'Cube3':
-            panoramaCube(urlCube.cube3, urlCube.format);
-            break;
-
-        case 'Equirectangular1':
-            panoramaEquirectanggular(urlEquirectangular.equi1);
-            break;
-        case 'Equirectangular2':
-            panoramaEquirectanggular(urlEquirectangular.equi2);
-            break;
-        case 'Equirectangular3':
-            panoramaEquirectanggular(urlEquirectangular.equi3);
-            break;
-
-        case 'Envinronment1':
-            environment(urlHdr.hdr1);
-            break;
-        case 'Envinronment2':
-            environment(urlHdr.hdr2);
-            break;
-        case 'Envinronment3':
-            environment(urlHdr.hdr3);
-            break;
-        case 'Envinronment4':
-            environment(urlHdr.hdr4);
-            break;
-    }
-}
-
 function onProgress( xhr ) {
 
     if ( xhr.lengthComputable ) {
 
         updateProgressBar( xhr.loaded / xhr.total );
 
-        console.log( Math.round( xhr.loaded / xhr.total * 100, 2 ) + '% downloaded' );
+        // console.log( Math.round( xhr.loaded / xhr.total * 100, 2 ) + '% downloaded' );
 
     }
 
