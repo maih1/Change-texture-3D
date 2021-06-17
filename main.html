@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="./style/style.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+    integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+  <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
+
+  <title>Document</title>
+</head>
+
+<body>
+  <header id="head">
+    <nav id="menu" class="navbar navbar-expand-lg ">
+      <a class="navbar-brand" href="#">Menu</a>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              Explore
+            </a>
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+      </div>
+    </nav>
+  </header>
+
+  <br><br>
+
+  <section class="main">
+    <div class="container">
+      <div class="row">
+        <div id="col1" class="col blogbox morebox">
+          <img id="octagon" src="./style/shoes.PNG" alt="Shoes" style="width: 330px; height: 280px;">
+          <div class="middle">
+            <a id="see" href="">See more</a>
+          </div>
+          
+        </div>
+        <div id="col2" class="col blogbox morebox">
+          <img id="octagon" src="./style/chair.PNG" alt="Snow" style="width: 330px; height: 280px;">
+          <div class="middle">
+            <a id="see" href="">See more</a>
+          </div>
+        </div>
+        <div id="col3" class="col blogbox morebox">
+          <img id="octagon" src="./style/bench.PNG" alt="Mountains" style="width: 330px; height: 280px;">
+          <div class="middle">
+            <a id="see" href="">See more</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div id="col3" class="col blogbox morebox" style="display: none;">
+          <img id="octagon" src="./style/chair.PNG" alt="Mountains" style="width: 330px; height: 280px;">
+          <div class="middle">
+            <a id="see" href="">See more</a>
+          </div>
+        </div>
+        <div id="col1" class="col blogbox morebox" style="display: none;">
+          <img id="octagon" src="./style/bench.PNG" alt="Nature" style="width: 330px; height: 280px;">
+          <div class="middle">
+            <a id="see" href="">See more</a>
+          </div>
+        </div>
+        <div id="col2" class="col blogbox morebox" style="display: none;">
+          <img id="octagon" src="./style/chair.PNG" alt="Snow" style="width: 330px; height: 280px;">
+          <div class="middle">
+            <a id="see" href="">See more</a>
+          </div>
+        </div>
+      </div>
+      <br><br>
+      <div id="loadMore" style="">
+        <a href="#">Load More</a>
+      </div>
+
+
+    </div>
+  </section>
+
+  <footer>
+    <div class="row" id="rowf">
+      <div class="col">
+        <div class="text">
+          <p>Tiểu luận khoa học 2021</p>
+        </div>
+      </div>
+      <div class="col">
+        <div class="tag">
+          <p id="count">0</p> 
+          <div class="fas fa-eye"></div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="icon">
+          <a class="fab fa-facebook-f" href="facebook.com"></a>
+          <a class="fab fa-google" href="google.com"></a>
+          <a class="fab fa-instagram" href="instagram.com"></a>
+          <a class="fab fa-twitter" href="twitter.com"></a>
+        </div>
+      </div>
+    </div>
+
+  </footer>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="load-more-button.js"></script>
+
+</html>
